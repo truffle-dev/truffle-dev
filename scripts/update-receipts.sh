@@ -163,6 +163,36 @@ replace_block() {
   return 0     # changed
 }
 
+# Preflight: fetch origin and confirm local main can fast-forward.
+# In April 2026 the script wrongly reported "unchanged; nothing to do"
+# for two days straight because local README already matched the numbers
+# it recomputed, while origin silently sat behind. The check now runs
+# unconditionally so divergence fails loud even when the block didn't
+# change.
+cd "$REPO_DIR"
+git fetch --quiet origin main
+local_head=$(git rev-parse HEAD)
+remote_head=$(git rev-parse origin/main)
+base=""
+if [ "$local_head" != "$remote_head" ]; then
+  base=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
+  if [ -z "$base" ]; then
+    echo "ERROR: local main and origin/main share no common ancestor." >&2
+    echo "       local=$local_head origin=$remote_head" >&2
+    echo "       Fix: reconcile local to origin/main before rerunning." >&2
+    exit 2
+  fi
+  if [ "$base" != "$remote_head" ] && [ "$base" != "$local_head" ]; then
+    echo "ERROR: local main has diverged from origin/main (not fast-forward)." >&2
+    echo "       local=$local_head origin=$remote_head base=$base" >&2
+    exit 2
+  fi
+fi
+ahead_of_origin=0
+if [ "$local_head" != "$remote_head" ] && [ "$base" = "$remote_head" ]; then
+  ahead_of_origin=1
+fi
+
 readme_changed=0
 homepage_changed=0
 
@@ -176,40 +206,19 @@ if [ -w "$HOMEPAGE" ]; then
   fi
 fi
 
-if [ "$readme_changed" = "0" ] && [ "$homepage_changed" = "0" ]; then
-  echo "Receipts unchanged on both surfaces; nothing to do."
-  exit 0
-fi
-
 if [ "$readme_changed" = "1" ]; then
-  cd "$REPO_DIR"
-
-  # Preflight: make sure local main can fast-forward onto origin/main.
-  # Silent push failure on orphan divergence was what left receipts stale
-  # for two days in April 2026. Fail loud here instead.
-  git fetch --quiet origin main
-  local_head=$(git rev-parse HEAD)
-  remote_head=$(git rev-parse origin/main)
-  if [ "$local_head" != "$remote_head" ]; then
-    base=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
-    if [ -z "$base" ]; then
-      echo "ERROR: local main and origin/main share no common ancestor; aborting before push." >&2
-      echo "       Fix: reconcile local to origin/main before rerunning." >&2
-      exit 2
-    fi
-    if [ "$base" != "$remote_head" ]; then
-      echo "ERROR: local main is not a fast-forward descendant of origin/main; aborting." >&2
-      echo "       local=$local_head origin=$remote_head base=$base" >&2
-      exit 2
-    fi
-  fi
-
   git add README.md
   git -c commit.gpgsign=false commit -m "Receipts: ${DAYS}d alive, ${POSTS} posts, ${PRS} ext PRs, ${TOOLS} tools, ${REPOS} repos
 
 Auto-update by scripts/update-receipts.sh on ${TODAY}."
+  ahead_of_origin=1
+fi
+
+if [ "$ahead_of_origin" = "1" ]; then
   git push origin main
   echo "Pushed README receipts update."
+elif [ "$readme_changed" = "0" ] && [ "$homepage_changed" = "0" ]; then
+  echo "Receipts unchanged on both surfaces; local and origin in sync."
 fi
 
 if [ "$homepage_changed" = "1" ]; then
