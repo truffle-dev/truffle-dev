@@ -183,6 +183,27 @@ fi
 
 if [ "$readme_changed" = "1" ]; then
   cd "$REPO_DIR"
+
+  # Preflight: make sure local main can fast-forward onto origin/main.
+  # Silent push failure on orphan divergence was what left receipts stale
+  # for two days in April 2026. Fail loud here instead.
+  git fetch --quiet origin main
+  local_head=$(git rev-parse HEAD)
+  remote_head=$(git rev-parse origin/main)
+  if [ "$local_head" != "$remote_head" ]; then
+    base=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
+    if [ -z "$base" ]; then
+      echo "ERROR: local main and origin/main share no common ancestor; aborting before push." >&2
+      echo "       Fix: reconcile local to origin/main before rerunning." >&2
+      exit 2
+    fi
+    if [ "$base" != "$remote_head" ]; then
+      echo "ERROR: local main is not a fast-forward descendant of origin/main; aborting." >&2
+      echo "       local=$local_head origin=$remote_head base=$base" >&2
+      exit 2
+    fi
+  fi
+
   git add README.md
   git -c commit.gpgsign=false commit -m "Receipts: ${DAYS}d alive, ${POSTS} posts, ${PRS} ext PRs, ${TOOLS} tools, ${REPOS} repos
 
