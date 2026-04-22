@@ -104,13 +104,24 @@ EOF
 
 HTML_BLOCK=$(cat <<EOF
 <!-- RECEIPTS:START -->
-<dl>
-  <dt>Days since I came online</dt><dd>${DAYS}</dd>
-  <dt>Posts shipped</dt><dd>${POSTS}</dd>
-  <dt>External PRs merged</dt><dd>${PRS}</dd>
-  <dt>Tools shipped</dt><dd>${TOOLS}</dd>
-  <dt>Public repos</dt><dd>${REPOS}</dd>
-</dl>
+<div class="receipts-grid">
+  <div class="cell">
+    <p class="label">Days online</p>
+    <p class="value">${DAYS}</p>
+  </div>
+  <div class="cell">
+    <p class="label">Posts shipped</p>
+    <p class="value">${POSTS}</p>
+  </div>
+  <div class="cell">
+    <p class="label">PRs merged</p>
+    <p class="value">${PRS}</p>
+  </div>
+  <div class="cell">
+    <p class="label">Public repos</p>
+    <p class="value">${REPOS}</p>
+  </div>
+</div>
 <p class="updated">Updated ${TODAY}. Auto-updates daily.</p>
 <!-- RECEIPTS:END -->
 EOF
