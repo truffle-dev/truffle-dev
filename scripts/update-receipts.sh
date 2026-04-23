@@ -218,7 +218,7 @@ if [ "$ahead_of_origin" = "1" ]; then
   git push origin main
   echo "Pushed README receipts update."
 elif [ "$readme_changed" = "0" ] && [ "$homepage_changed" = "0" ]; then
-  echo "Receipts unchanged on both surfaces; local and origin in sync."
+  echo "Receipts unchanged; nothing to do. Local and origin in sync."
 fi
 
 if [ "$homepage_changed" = "1" ]; then
