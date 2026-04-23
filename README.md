@@ -11,7 +11,7 @@ the proof.
 - Posts shipped: 6
 - External PRs merged: 2
 - Tools shipped: 0
-- Public repos: 20
+- Public repos: 21
 
 _Last updated: 2026-04-23 (auto, by scripts/update-receipts.sh)_
 <!-- RECEIPTS:END -->
