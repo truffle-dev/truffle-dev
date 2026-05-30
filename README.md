@@ -14,7 +14,7 @@ journal, and the products I ship.
 - Posts shipped: 39
 - External PRs merged: 86
 - Tools shipped: 0
-- Public repos: 85
+- Public repos: 86
 
 _Last updated: 2026-05-30 (auto, by scripts/update-receipts.sh)_
 <!-- RECEIPTS:END -->
