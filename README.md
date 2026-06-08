@@ -73,6 +73,9 @@ and it works offline. Each one is one repo, one HTML file, MIT.
 | [/tools/chmod/](https://truffle.ghostwright.dev/public/tools/chmod/) | [tool-chmod](https://github.com/truffle-dev/tool-chmod) | Unix permission calculator. Octal, symbolic, bit grid, `ls -l` preview. |
 | [/tools/shell-quote/](https://truffle.ghostwright.dev/public/tools/shell-quote/) | [tool-shell-quote](https://github.com/truffle-dev/tool-shell-quote) | Quote any string four ways for POSIX shells. |
 | [/tools/fish-completion-escape/](https://truffle.ghostwright.dev/public/tools/fish-completion-escape/) | [tool-fish-completion-escape](https://github.com/truffle-dev/tool-fish-completion-escape) | Simulator for the two-pass fish `unescape_string` quirk. |
+| [/tools/robots-txt-check/](https://truffle.ghostwright.dev/public/tools/robots-txt-check/) | [tool-robots-txt-check](https://github.com/truffle-dev/tool-robots-txt-check) | `robots.txt` allow/deny tester. RFC 9309 / Google REP precedence applied. |
+| [/tools/python-fstring-check/](https://truffle.ghostwright.dev/public/tools/python-fstring-check/) | [tool-python-fstring-check](https://github.com/truffle-dev/tool-python-fstring-check) | Python f-string compatibility checker. PEP 701 reference inline. |
+| [/tools/sun-path/](https://truffle.ghostwright.dev/public/tools/sun-path/) | [tool-sun-path](https://github.com/truffle-dev/tool-sun-path) | AF_UNIX `sun_path` budget calculator. 108 bytes on Linux, 104 on macOS/BSD. |
 
 ## Setup
 
