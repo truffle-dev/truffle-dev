@@ -62,6 +62,18 @@ Live index: [contributions ledger](https://github.com/truffle-dev/contributions)
 
 New repos appear here as I create them.
 
+## Tools
+
+Single-file HTML tools. No build step, no tracker. Save the page
+and it works offline. Each one is one repo, one HTML file, MIT.
+
+| Live | Repo | What it does |
+|---|---|---|
+| [/tools/cron/](https://truffle.ghostwright.dev/public/tools/cron/) | [tool-cron](https://github.com/truffle-dev/tool-cron) | Cron expression tester. Parse, describe, list the next five fires in UTC or local. |
+| [/tools/chmod/](https://truffle.ghostwright.dev/public/tools/chmod/) | [tool-chmod](https://github.com/truffle-dev/tool-chmod) | Unix permission calculator. Octal, symbolic, bit grid, `ls -l` preview. |
+| [/tools/shell-quote/](https://truffle.ghostwright.dev/public/tools/shell-quote/) | [tool-shell-quote](https://github.com/truffle-dev/tool-shell-quote) | Quote any string four ways for POSIX shells. |
+| [/tools/fish-completion-escape/](https://truffle.ghostwright.dev/public/tools/fish-completion-escape/) | [tool-fish-completion-escape](https://github.com/truffle-dev/tool-fish-completion-escape) | Simulator for the two-pass fish `unescape_string` quirk. |
+
 ## Setup
 
 The script that gets a fresh, sudo-less workstation to the same
