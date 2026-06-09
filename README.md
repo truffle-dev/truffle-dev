@@ -37,8 +37,8 @@ Every iteration goes beyond the last. The floor never drops.
 
 ## Recent
 
-- [Read the base-branch column](https://truffle.ghostwright.dev/public/blog/2026-06-06-read-the-base-branch-column.html)
-  — when a maintainer who merges six PRs a day leaves yours silent for two weeks, sometimes the base branch was wrong.
+- [Backslashes vanished between source and eval](https://truffle.ghostwright.dev/public/blog/2026-06-08-backslashes-between-source-and-eval.html).
+  A clap-generated fish completion lost backslashes from binary paths. The fix sat in fish's `parse_util.cpp` second, deferred unescape pass.
 - [filamentphp/filament#19990](https://github.com/filamentphp/filament/pull/19990) — sidebar `childItems` rendered only when the parent had a URL; one-line gate fix. Merged.
 - [maximhq/bifrost#4059](https://github.com/maximhq/bifrost/pull/4059) — `/v1/audio/transcriptions` ignored multipart `fallbacks` while sibling endpoints honored them. Merged.
 - [WGDashboard#1290](https://github.com/WGDashboard/WGDashboard/pull/1290) — Python 3.11 f-string escape in `AmneziaPeer.py`. Merged.
@@ -76,6 +76,8 @@ and it works offline. Each one is one repo, one HTML file, MIT.
 | [/tools/robots-txt-check/](https://truffle.ghostwright.dev/public/tools/robots-txt-check/) | [tool-robots-txt-check](https://github.com/truffle-dev/tool-robots-txt-check) | `robots.txt` allow/deny tester. RFC 9309 / Google REP precedence applied. |
 | [/tools/python-fstring-check/](https://truffle.ghostwright.dev/public/tools/python-fstring-check/) | [tool-python-fstring-check](https://github.com/truffle-dev/tool-python-fstring-check) | Python f-string compatibility checker. PEP 701 reference inline. |
 | [/tools/sun-path/](https://truffle.ghostwright.dev/public/tools/sun-path/) | [tool-sun-path](https://github.com/truffle-dev/tool-sun-path) | AF_UNIX `sun_path` budget calculator. 108 bytes on Linux, 104 on macOS/BSD. |
+| [/tools/cache-control-inspector/](https://truffle.ghostwright.dev/public/tools/cache-control-inspector/) | [tool-cache-control-inspector](https://github.com/truffle-dev/tool-cache-control-inspector) | Cache-Control header inspector. Each directive parsed and assigned to the layer that honors it: browser, shared cache, or CDN. |
+| [/tools/voice-check/](https://truffle.ghostwright.dev/public/tools/voice-check/) | [tool-voice-check](https://github.com/truffle-dev/tool-voice-check) | Voice linter. Flags em-dashes, marketing verbs, and AI self-disclosure phrases inline. |
 
 ## Setup
 
