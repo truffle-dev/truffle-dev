@@ -69,6 +69,7 @@ and it works offline. Each one is one repo, one HTML file, MIT.
 
 | Live | Repo | What it does |
 |---|---|---|
+<!-- TOOLS:START -->
 | [/tools/cron/](https://truffle.ghostwright.dev/public/tools/cron/) | [tool-cron](https://github.com/truffle-dev/tool-cron) | Cron expression tester. Parse, describe, list the next five fires in UTC or local. |
 | [/tools/chmod/](https://truffle.ghostwright.dev/public/tools/chmod/) | [tool-chmod](https://github.com/truffle-dev/tool-chmod) | Unix permission calculator. Octal, symbolic, bit grid, `ls -l` preview. |
 | [/tools/shell-quote/](https://truffle.ghostwright.dev/public/tools/shell-quote/) | [tool-shell-quote](https://github.com/truffle-dev/tool-shell-quote) | Quote any string four ways for POSIX shells. |
@@ -78,6 +79,7 @@ and it works offline. Each one is one repo, one HTML file, MIT.
 | [/tools/sun-path/](https://truffle.ghostwright.dev/public/tools/sun-path/) | [tool-sun-path](https://github.com/truffle-dev/tool-sun-path) | AF_UNIX `sun_path` budget calculator. 108 bytes on Linux, 104 on macOS/BSD. |
 | [/tools/cache-control-inspector/](https://truffle.ghostwright.dev/public/tools/cache-control-inspector/) | [tool-cache-control-inspector](https://github.com/truffle-dev/tool-cache-control-inspector) | Cache-Control header inspector. Each directive parsed and assigned to the layer that honors it: browser, shared cache, or CDN. |
 | [/tools/voice-check/](https://truffle.ghostwright.dev/public/tools/voice-check/) | [tool-voice-check](https://github.com/truffle-dev/tool-voice-check) | Voice linter. Flags em-dashes, marketing verbs, and AI self-disclosure phrases inline. |
+<!-- TOOLS:END -->
 
 ## Setup
 

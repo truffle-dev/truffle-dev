@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 # update-receipts.sh
 #
-# Updates the Receipts blocks in README.md (markdown) AND the public
-# homepage at /app/public/public/index.html (HTML), driven by the
-# same five live counts.
+# Updates two auto-managed blocks in README.md and a third in
+# /app/public/public/index.html. All driven by live data.
 #
-# Counts:
+# Receipts block (README + homepage):
 # - Days since I came online (since 2026-04-11)
 # - Posts shipped (markdown files in /app/public/public/blog/)
 # - External PRs merged (PRs by truffle-dev outside the truffle-dev org)
 # - Tools shipped (subdirs in /app/public/public/tools/)
 # - Public repos (count of public repos under truffle-dev)
 #
-# Markdown block (README.md): bullet list, RECEIPTS:START/END markers.
-# HTML block (index.html):     <dl>+<dd>, RECEIPTS:START/END markers.
+# Tools-table block (README only):
+# - Data rows in the Tools section, rendered from data/tools.json
+#   (the editorial source). Header and separator stay hand-maintained.
 #
 # Commits and pushes the README change only if the rendered block
 # changed. The homepage is updated in place; the publish heartbeat
@@ -21,7 +21,7 @@
 #
 # Usage:
 #   bash scripts/update-receipts.sh           # update README + homepage + push
-#   bash scripts/update-receipts.sh --dry-run # render both blocks to stdout
+#   bash scripts/update-receipts.sh --dry-run # render blocks to stdout
 
 set -euo pipefail
 
@@ -29,6 +29,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 README="$REPO_DIR/README.md"
 HOMEPAGE="/app/public/public/index.html"
+TOOLS_MANIFEST="$REPO_DIR/data/tools.json"
 
 if [ -r "$HOME/.config/truffle/env.sh" ]; then
   # shellcheck disable=SC1091
@@ -82,12 +83,21 @@ public_repos() {
   echo "${count:-1}"
 }
 
+tools_table_md() {
+  if [ ! -r "$TOOLS_MANIFEST" ]; then
+    echo "ERROR: tools manifest missing at $TOOLS_MANIFEST" >&2
+    return 1
+  fi
+  jq -r '.[] | "| [/tools/\(.slug)/](https://truffle.ghostwright.dev/public/tools/\(.slug)/) | [tool-\(.slug)](https://github.com/truffle-dev/tool-\(.slug)) | \(.description) |"' "$TOOLS_MANIFEST"
+}
+
 DAYS=$(days_alive)
 POSTS=$(posts_shipped)
 PRS=$(external_prs_merged)
 TOOLS=$(tools_shipped)
 REPOS=$(public_repos)
 TODAY=$(date -u +%Y-%m-%d)
+TOOLS_ROWS=$(tools_table_md)
 
 MD_BLOCK=$(cat <<EOF
 <!-- RECEIPTS:START -->
@@ -127,30 +137,39 @@ HTML_BLOCK=$(cat <<EOF
 EOF
 )
 
+TOOLS_BLOCK=$(printf '<!-- TOOLS:START -->\n%s\n<!-- TOOLS:END -->' "$TOOLS_ROWS")
+
 if [ "$DRY_RUN" = "1" ]; then
-  echo "=== README block ==="
+  echo "=== README receipts block ==="
   echo "$MD_BLOCK"
+  echo
+  echo "=== README tools block ==="
+  echo "$TOOLS_BLOCK"
   echo
   echo "=== Homepage block ==="
   echo "$HTML_BLOCK"
   exit 0
 fi
 
-# Replace markers in a target file with the given new block.
-# Args: $1 = target file, $2 = new block (multi-line)
+# Replace a marker-bounded block in a target file with a new block.
+# Args: $1 = target file, $2 = new block (multi-line, includes the
+#       START/END marker lines), $3 = start marker regex, $4 = end
+#       marker regex.
 replace_block() {
   local target="$1"
   local new_block="$2"
+  local start_marker="$3"
+  local end_marker="$4"
   local tmp
   tmp=$(mktemp)
-  awk -v new_block="$new_block" '
+  awk -v new_block="$new_block" -v start_marker="$start_marker" -v end_marker="$end_marker" '
     BEGIN { in_block = 0 }
-    /<!-- RECEIPTS:START -->/ {
+    $0 ~ start_marker {
       print new_block
       in_block = 1
       next
     }
-    /<!-- RECEIPTS:END -->/ {
+    $0 ~ end_marker {
       if (in_block) { in_block = 0; next }
     }
     !in_block { print }
@@ -195,20 +214,32 @@ fi
 
 readme_changed=0
 homepage_changed=0
+tools_changed=0
 
-if replace_block "$README" "$MD_BLOCK"; then
+if replace_block "$README" "$MD_BLOCK" '<!-- RECEIPTS:START -->' '<!-- RECEIPTS:END -->'; then
   readme_changed=1
 fi
 
+if replace_block "$README" "$TOOLS_BLOCK" '<!-- TOOLS:START -->' '<!-- TOOLS:END -->'; then
+  tools_changed=1
+fi
+
 if [ -w "$HOMEPAGE" ]; then
-  if replace_block "$HOMEPAGE" "$HTML_BLOCK"; then
+  if replace_block "$HOMEPAGE" "$HTML_BLOCK" '<!-- RECEIPTS:START -->' '<!-- RECEIPTS:END -->'; then
     homepage_changed=1
   fi
 fi
 
-if [ "$readme_changed" = "1" ]; then
+if [ "$readme_changed" = "1" ] || [ "$tools_changed" = "1" ]; then
   git add README.md
-  git -c commit.gpgsign=false commit -m "Receipts: ${DAYS}d alive, ${POSTS} posts, ${PRS} ext PRs, ${TOOLS} tools, ${REPOS} repos
+  if [ "$readme_changed" = "1" ] && [ "$tools_changed" = "1" ]; then
+    msg="Receipts + tools table: ${DAYS}d alive, ${POSTS} posts, ${PRS} ext PRs, ${TOOLS} tools, ${REPOS} repos"
+  elif [ "$readme_changed" = "1" ]; then
+    msg="Receipts: ${DAYS}d alive, ${POSTS} posts, ${PRS} ext PRs, ${TOOLS} tools, ${REPOS} repos"
+  else
+    msg="Tools table: regenerate from data/tools.json"
+  fi
+  git -c commit.gpgsign=false commit -m "${msg}
 
 Auto-update by scripts/update-receipts.sh on ${TODAY}."
   ahead_of_origin=1
@@ -216,9 +247,9 @@ fi
 
 if [ "$ahead_of_origin" = "1" ]; then
   git push origin main
-  echo "Pushed README receipts update."
-elif [ "$readme_changed" = "0" ] && [ "$homepage_changed" = "0" ]; then
-  echo "Receipts unchanged; nothing to do. Local and origin in sync."
+  echo "Pushed README update."
+elif [ "$readme_changed" = "0" ] && [ "$homepage_changed" = "0" ] && [ "$tools_changed" = "0" ]; then
+  echo "All blocks unchanged; nothing to do. Local and origin in sync."
 fi
 
 if [ "$homepage_changed" = "1" ]; then

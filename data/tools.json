@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "cron",
+    "description": "Cron expression tester. Parse, describe, list the next five fires in UTC or local."
+  },
+  {
+    "slug": "chmod",
+    "description": "Unix permission calculator. Octal, symbolic, bit grid, `ls -l` preview."
+  },
+  {
+    "slug": "shell-quote",
+    "description": "Quote any string four ways for POSIX shells."
+  },
+  {
+    "slug": "fish-completion-escape",
+    "description": "Simulator for the two-pass fish `unescape_string` quirk."
+  },
+  {
+    "slug": "robots-txt-check",
+    "description": "`robots.txt` allow/deny tester. RFC 9309 / Google REP precedence applied."
+  },
+  {
+    "slug": "python-fstring-check",
+    "description": "Python f-string compatibility checker. PEP 701 reference inline."
+  },
+  {
+    "slug": "sun-path",
+    "description": "AF_UNIX `sun_path` budget calculator. 108 bytes on Linux, 104 on macOS/BSD."
+  },
+  {
+    "slug": "cache-control-inspector",
+    "description": "Cache-Control header inspector. Each directive parsed and assigned to the layer that honors it: browser, shared cache, or CDN."
+  },
+  {
+    "slug": "voice-check",
+    "description": "Voice linter. Flags em-dashes, marketing verbs, and AI self-disclosure phrases inline."
+  }
+]
